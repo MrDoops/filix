@@ -2,16 +2,8 @@ defmodule Filix.Uploading.Uploader do
   @moduledoc """
   Manages the complexity of uploading a file by tracking the state of an uploading file to a storage provider.
 
-  States:
-    :requested
-    :storage_resources_prepared
-    :uploading
-    :complete
-    :on_hold
-    :cancelled
-
   Commands:
-    :update_upload_progress
+    :upload_progress
     :reinitiate_upload
     :cancel_upload
     :upload_status
@@ -54,25 +46,36 @@ defmodule Filix.Uploading.Uploader do
     GenServer.call(file_id, :status)
   end
 
+  @doc """
+  Should fetch a new signed_url should the original expire.
+
+  If possible this should utilize existing partial uploads - but may need to restart upload.
+  """
+  def reinitiate_upload(file_id) do
+    GenServer.call(file_id, :reinitiate_upload)
+  end
+
   # Server callbacks
 
   # TODO: use default configured storage provider or parse option from command.
   # Handle error for storage_provider authentication?
   def handle_call(:request_upload, _from, %RequestUpload{} = command) do
     upload   = Upload.new(command)
-    provider = Application.get_env(:filix, :default_storage_provider)
+    provider = command.storage_provider || Application.get_env(:filix, :default_storage_provider)
 
-    case provider.setup_storage_resources(file) do
-      {:ok, file}    -> Upload.set_status(file, :storage_resources_prepared)
-      {:error, file} -> file
+    case provider.setup_storage_resources(upload) do
+      {:ok, url} ->
+        {:reply, {:ok, url}, Upload.set_state(upload, :storage_resources_prepared)}
+
+      {:error, _} = error ->
+        {:reply, error, upload}
     end
-    {:reply, :ok, file}
   end
 
-  def handle_cast({:update_upload_progress, progress}, %File{} = file) do
-    {:no_reply, %File{ file |
+  def handle_cast({:update_upload_progress, progress}, %Upload{} = upload) do
+    {:no_reply, %Upload{ upload |
         upload_progress: progress,
-        status: Upload.status_from_progress(file),
+        status: Upload.status_from_progress(upload),
       }
     }
   end

@@ -1,6 +1,8 @@
 # Filix
 
-**TODO: Add description**
+Flexible File Management capabilities designed for modern event-driven systems.
+
+### In Progress - Not Recommended for Production
 
 ## Installation
 
