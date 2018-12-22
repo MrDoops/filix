@@ -31,5 +31,11 @@ defmodule Filix.Uploading.Commands.RequestUpload do
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> Map.put_new(:requested_on, DateTime.utc_now())
+    |> ensure_configured_storage_provider()
+  end
+
+  defp ensure_configured_storage_provider(changeset) do
+    # TODO: check that the storage provider can map to a configured storage provider
+    changeset
   end
 end

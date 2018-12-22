@@ -1,6 +1,6 @@
 defmodule Filix.Persistence do
   @moduledoc """
-  Defines the interface for persistence state changes to files.
+  Defines the interface for persistence commands to files.
   """
   alias Filix.{File, Tag}
 
