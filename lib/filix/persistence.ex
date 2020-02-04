@@ -1,6 +1,6 @@
 defmodule Filix.Persistence do
   @moduledoc """
-  Defines the interface for persistence commands to files.
+  What a Filix Persistence layer must implement.
   """
   alias Filix.{File, Tag}
 
@@ -10,12 +10,10 @@ defmodule Filix.Persistence do
   @callback create_file(File.t()) ::
     {:ok, File.t()}
     | {:error, String.t()}
-    | {:error, Ecto.Changeset.t()}
 
   @callback tag_file(file_id, list(Tag.t()) | Tag.t()) ::
-    {:ok, Tag.t()}
+    {:ok, File.t()}
     | {:error, String.t()}
-    | {:error, Ecto.Changeset.t()}
 
   @callback delete_file(file_id) :: :ok | {:error, String.t()}
 

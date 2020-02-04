@@ -15,6 +15,6 @@ defmodule Filix.Query do
     | {:error, any()}
 
   @callback files_of_tags(list(tag_name)) ::
-    {:ok, %{optional(tag_name) => list()}}
+    {:ok, %{optional(tag_name) => list(File.t())}}
     | {:error, any()}
 end

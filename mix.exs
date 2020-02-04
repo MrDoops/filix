@@ -23,7 +23,7 @@ defmodule Filix.MixProject do
   defp deps do
     [
       {:uuid, "~> 1.1"},
-      {:ecto, "~> 3.0.0"},
+      {:norm, "~> 0.5"},
       {:typed_struct, "~> 0.1.4"},
     ]
   end

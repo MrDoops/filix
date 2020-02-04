@@ -2,11 +2,17 @@ defmodule Filix.StorageProvider do
   @moduledoc """
   Contract of what a configured Storage Provider must implement.
   """
-  alias Filix.Uploading.Commands.RequestUpload
+  alias Filix.Commands.RequestUpload
 
-  @callback request_upload(%RequestUpload{}) ::
-    {:ok, %{signed_url: String.t()}}
-    | {:error, String.t()}
+  @type file_id() :: binary()
+  @type signed_url() :: String.t()
 
-  # @callback delete_file()
+  @callback request_upload(RequestUpload.t()) ::
+    {:ok, signed_url()}
+    | {:error, signed_url()}
+
+  @callback delete_file(file_id()) ::
+    :ok
+    | :error
+    | {:error, :not_found}
 end

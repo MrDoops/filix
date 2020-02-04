@@ -1,16 +1,15 @@
 defmodule Filix.File do
   @moduledoc """
-  Base return type of Filix file management.
+  Return type of Filix file management representing an uploaded file.
   """
   use TypedStruct
-  alias Filix.Uploading.Commands.RequestUpload
+  alias Filix.Commands.RequestUpload
 
   typedstruct do
     field :id, String.t(), enforce: true
     field :name, String.t(), enforce: true
     field :size, integer(), enforce: true
     field :type, String.t(), enforce: true
-    field :url, String.t(), default: nil
     field :tags, nonempty_list(String.t()), enforce: true
   end
 

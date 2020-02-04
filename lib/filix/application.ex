@@ -3,7 +3,10 @@ defmodule Filix.Application do
   use Application
 
   def start(_type, _args) do
-    children = []
+    children = [
+      {Registry, name: Filix.UploadRegistry, keys: :unique},
+      {Filix.Runtime.UploadSupervisor, []}
+    ]
 
     opts = [strategy: :one_for_one, name: Filix.Supervisor]
     Supervisor.start_link(children, opts)

@@ -2,7 +2,15 @@ defmodule FilixTest do
   use ExUnit.Case
   doctest Filix
 
-  test "greets the world" do
-    assert Filix.hello() == :world
+  describe "boundary validation" do
+
+    test "upload requests return errors without required parameters" do
+
+    end
+
+    test "valid parameters " do
+
+    end
+
   end
 end
