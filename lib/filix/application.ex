@@ -4,7 +4,6 @@ defmodule Filix.Application do
 
   def start(_type, _args) do
     children = [
-      {Registry, name: Filix.UploadRegistry, keys: :unique},
       {Filix.Runtime.UploadSupervisor, []}
     ]
 

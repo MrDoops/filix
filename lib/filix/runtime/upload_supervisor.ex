@@ -3,7 +3,7 @@ defmodule Filix.Runtime.UploadSupervisor do
   Dynamic Supervisor responsible for spawning uploaders upon request.
   """
   use DynamicSupervisor
-  alias Filix.Uploading.{Commands.RequestUpload, Uploader}
+  alias Filix.{Commands.RequestUpload, Runtime.UploadProcess}
 
   def start_link(_) do
     DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)

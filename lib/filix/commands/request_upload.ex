@@ -1,6 +1,10 @@
 defmodule Filix.Commands.RequestUpload do
   @moduledoc """
-  Command validation layer for Requesting Uploads
+  Command validation layer for Requesting Uploads.
+
+  Ensures that required file information is specfified.
+
+  Allows optional overrides of the Storage Provider configuration.
   """
   import Norm
 
@@ -35,6 +39,6 @@ defmodule Filix.Commands.RequestUpload do
   def new(params) do
     struct!(__MODULE__, params)
     |> Map.put(:upload_id, UUID.uuid4())
-    |> Norm.conform!(s())
+    |> conform!(s())
   end
 end

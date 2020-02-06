@@ -15,6 +15,7 @@ defmodule Filix.Runtime.UploadProcess do
     Upload,
     Commands.RequestUpload,
     Runtime.UploadSupervisor,
+    Runtime.ServiceManager,
   }
 
   def via(upload_id) when is_binary(upload_id) do
@@ -53,10 +54,9 @@ defmodule Filix.Runtime.UploadProcess do
     {:ok, cmd, {:continue, :init}}
   end
 
-  # Todo: Consider upload recoveries
   def handle_continue(:init, %RequestUpload{} = cmd) do
-    {:ok, url} = cmd.storage_provider.request_upload(cmd)
-    {:noreply, Upload.new(cmd, url)}
+    config = ServiceManager.fetch_config()
+    {:noreply, Upload.new(cmd)}
   end
 
   def cancel_upload(upload_id) do

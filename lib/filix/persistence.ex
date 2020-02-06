@@ -1,6 +1,12 @@
 defmodule Filix.Persistence do
   @moduledoc """
   What a Filix Persistence layer must implement.
+
+  Defines how Files and Tags are created, updated, and deleted.
+
+  Should work in tandem with a Query implementation so the default capabilities of managing files by Filix is possible.
+
+  If you'd like to persist a log of events that can be done by handling events published by
   """
   alias Filix.{File, Tag}
 

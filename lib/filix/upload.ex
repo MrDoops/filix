@@ -26,12 +26,13 @@ defmodule Filix.Upload do
     field :storage_provider, atom()
   end
 
-  def new(%RequestUpload{} = command, signed_url) do
+  def new(%RequestUpload{} = command) do
+
+
     %Upload{
       file: File.new(command),
       status: :requested,
       progress: 0,
-      signed_url: signed_url,
     }
   end
 
@@ -39,6 +40,13 @@ defmodule Filix.Upload do
 
   def progress(%Upload{} = upload, progress) when is_integer(progress) do
     %Upload{upload | progress: progress, status: status_from_progress(progress)}
+  end
+
+  def prepare_storage_resources(%Upload{} = upload) do
+    case upload.storage_provider.request_upload(upload.file) do
+      {:ok, url} -> %Upload{ upload | status: :storage_resources_prepared, signed_url: url}
+      _ -> {:error, :error_occurred_preparing_signed_url}
+    end
   end
 
   defp status_from_progress(progress) do
@@ -54,10 +62,5 @@ defmodule Filix.Upload do
   def set_state(%Upload{status: :requested} = upload, :storage_resources_prepared), do:
     %Upload{ upload | status: :storage_resources_prepared}
   def set_state(%Upload{status: :storage_resources_prepared} = upload, :uploading), do:
-    %Upload{ upload | status: :uploading}
-  def set_state(%Upload{status: :uploading} = upload, :uploading, progress) do
-    %Upload{ upload | status: :uploading}
-  end
-  def set_state(%Upload{status: :uploading} = upload, :complete), do:
     %Upload{ upload | status: :uploading}
 end

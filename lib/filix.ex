@@ -8,11 +8,8 @@ defmodule Filix do
   `Query` : Query Behaviour used to fetch, find, and serve persisted files.
   `EventMessaging` : Filix Messaging behaviour used to integrate custom event handlers to Filix interactions.
 
-  Filix also requires a Storage Provider
-
-  Filix requires a Storage Provider adapter when making upload requests so it can
+  Filix also requires a Storage Provider adapter when making upload requests so it can
     request files to upload.
-
 
   How should Filix's adapters be configured?
 
@@ -41,31 +38,52 @@ defmodule Filix do
       type: "JPG",
       tags: ["images", "mountain", "hike"]
     )
-
-    {:ok, upload_url} = MyAppsFilixService.execute(upload_request)
     ```
   """
   alias Filix.{
     Commands.RequestUpload,
     Runtime.UploadProcess,
     Runtime.UploadSupervisor,
+    Runtime.ServiceManager,
     File,
   }
+  import Norm
 
-  def start_link(name, opts \\ []) do
-    with :ok <- validate_persistence(opts),
+  @doc """
+  Used to start a Filix Service under a supervisor.
 
-    do
+  Expected configuration:
 
-    end
-  end
+  * `name` : Atom / Module name that is used to identify supervised processes spawned by Filix
+  * `query` : Module that implements the Filix.Query behaviour
+  * `persistence` : Module that implements the Filix.Persistence behaviour
+  * `event_messaging` : Module that implements the Filix.EventMessaging behaviour
+  * `storage_provider` : Default module that implements the Filix.StorageProvider behaviour. Overridable in Filix commands.
 
-  def request_upload(params \\ %{}) when is_map(params) do
-    with {:ok, command} <- RequestUpload.new(params) do
-      command |> UploadProcess.request_upload()
+  Invalid configuration will result in an error.
+  """
+  def child_spec(config) do
+    with {:ok, _config} <- validate_config(config) do
+      ServiceManager.start_link(config)
     else
       error -> error
     end
+  end
+
+  defp validate_config(config) do
+    conform(config, valid_config())
+  end
+
+  defp valid_config, do: schema(%{
+    name: spec(is_atom()),
+    query: spec(is_atom()),
+    persistence: spec(is_atom()),
+    event_messaging: spec(is_atom()),
+    storage_provider: spec(is_atom()),
+  })
+
+  def request_upload(params) do
+    RequestUpload.new(params)
   end
 
   def update_upload_progress(upload_id, progress)
@@ -74,6 +92,6 @@ defmodule Filix do
   end
 
   def cancel(upload_id) do
-    UploadProcess.cancel(upload_id)
+    UploadProcess.cancel_upload(upload_id)
   end
 end

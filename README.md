@@ -7,7 +7,7 @@ persistence, storage providers (S3, GCS, etc), query and event messaging capabil
 
 The goal is that you can plug Filix into any Elixir application where you want to upload and manage
 static files. Filix emits a variety of events to the event messaging adapter you configure to support
-live monitoring of upload progress even with presigned url uploads.
+live monitoring of upload progress with presigned url uploads so long as the client notifies of progress.
 
 Files can be tagged in Filix either to start when Requesting an Upload, or afterward. Events are emitted to the 
 configured event_messaging adapter, so when a file is successfully uploaded or tagged your custom event handler can 
