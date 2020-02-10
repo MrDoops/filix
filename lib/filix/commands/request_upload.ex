@@ -39,6 +39,6 @@ defmodule Filix.Commands.RequestUpload do
   def new(params) do
     struct!(__MODULE__, params)
     |> Map.put(:upload_id, UUID.uuid4())
-    |> conform!(s())
+    |> conform(s())
   end
 end

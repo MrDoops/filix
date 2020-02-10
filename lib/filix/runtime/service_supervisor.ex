@@ -10,7 +10,9 @@ defmodule Filix.Runtime.ServiceSupervisor do
   }
 
   def start_link(config) do
-    Supervisor.start_link(__MODULE__, config, name: Module.concat(__MODULE__, config.name))
+    sup_name = Module.concat(__MODULE__, config[:name])
+
+    Supervisor.start_link(__MODULE__, config, name: sup_name)
   end
 
   @impl true

@@ -21,7 +21,7 @@ defmodule FilixTest do
 
   end
 
-  describe "filix applications" do
+  describe "filix services" do
 
     test "we can start a filix application by name configuring default adapters for use" do
 
@@ -31,7 +31,7 @@ defmodule FilixTest do
 
     end
 
-    test "filix applications can be dispatched request upload commands for signed urls" do
+    test "filix services can be dispatched request upload commands for signed urls" do
 
     end
 

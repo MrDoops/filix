@@ -11,7 +11,7 @@ live monitoring of upload progress with presigned url uploads so long as the cli
 
 Files can be tagged in Filix either to start when Requesting an Upload, or afterward. Events are emitted to the 
 configured event_messaging adapter, so when a file is successfully uploaded or tagged your custom event handler can 
-do things like associate that file to other records in your database. Additionally since you can send Filix 
+do things like associate that file to other records in your database based on tags. Additionally since you can send Filix 
 upload progression messages, your client-side upload code can ensure live server-side monitoring of an upload even when
 using a pre-signed url method.
 
