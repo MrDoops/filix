@@ -11,15 +11,14 @@ defmodule Filix.Runtime.UploadProcess do
   use GenServer
 
   alias Filix.{
-    File,
     Upload,
     Commands.RequestUpload,
     Runtime.UploadSupervisor,
     Runtime.ServiceManager,
   }
 
-  def via(upload_id) when is_binary(upload_id) do
-    {:via, Registry, {Filix.UploadRegistry, {__MODULE__, upload_id}}}
+  def via(service_name, upload_id) when is_binary(upload_id) do
+    {:via, Registry, {Module.concat(Filix.UploadRegistry, service_name), {__MODULE__, upload_id}}}
   end
 
   def child_spec(upload_id) do
@@ -34,7 +33,7 @@ defmodule Filix.Runtime.UploadProcess do
     GenServer.start_link(
       __MODULE__,
       cmd,
-      name: via(cmd.upload_id)
+      name: via(cmd.service_name, cmd.upload_id)
     )
   end
   def start_link(_), do: {:error, :invalid_command}
@@ -46,8 +45,8 @@ defmodule Filix.Runtime.UploadProcess do
     )
   end
 
-  def stop(upload_id) do
-    GenServer.stop(via(upload_id))
+  def stop(service_name, upload_id) do
+    GenServer.stop(via(service_name, upload_id))
   end
 
   def init(%RequestUpload{} = cmd) do
@@ -55,20 +54,20 @@ defmodule Filix.Runtime.UploadProcess do
   end
 
   def handle_continue(:init, %RequestUpload{} = cmd) do
-    config = ServiceManager.fetch_config()
-    {:noreply, Upload.new(cmd)}
+    config = ServiceManager.fetch_config(cmd.service_name)
+    {:noreply, Upload.new(cmd, config.storage_provider)}
   end
 
-  def cancel_upload(upload_id) do
-    GenServer.call(via(upload_id), :cancel_upload)
+  def cancel_upload(service_name, upload_id) do
+    GenServer.call(via(service_name, upload_id), :cancel_upload)
   end
 
-  def update_progress(upload_id, progress) when is_integer(progress) do
-    GenServer.cast(via(upload_id), {:update_upload_progress, progress})
+  def update_progress(service_name, upload_id, progress) when is_integer(progress) do
+    GenServer.cast(via(service_name, upload_id), {:update_upload_progress, progress})
   end
 
-  def status(upload_id) do
-    GenServer.call(via(upload_id), :status)
+  def status(service_name, upload_id) do
+    GenServer.call(via(service_name, upload_id), :status)
   end
 
   def handle_cast({:update_upload_progress, progress}, %Upload{} = upload) do

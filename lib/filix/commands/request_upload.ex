@@ -16,6 +16,7 @@ defmodule Filix.Commands.RequestUpload do
     :tags,
     :storage_provider,
     :upload_id,
+    :service_name,
   ]
 
   @type t() :: %__MODULE__{
@@ -25,6 +26,7 @@ defmodule Filix.Commands.RequestUpload do
     tags: nonempty_list(String.t()),
     storage_provider: module(),
     upload_id: String.t(),
+    service_name: module(),
   }
 
   def s, do: schema(%__MODULE__{
@@ -33,7 +35,8 @@ defmodule Filix.Commands.RequestUpload do
     type: spec(is_binary()),
     tags: spec(is_list()),
     storage_provider: spec(is_atom()),
-    upload_id: spec(is_binary())
+    upload_id: spec(is_binary()),
+    service_name: spec(is_atom()),
   })
 
   def new(params) do

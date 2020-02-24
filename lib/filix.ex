@@ -99,17 +99,17 @@ defmodule Filix do
     case validate_config(config) do
       {:ok, _config} ->
         ServiceSupervisor.child_spec(config)
-      {:error, norm_config_error} ->
+      {:error, _norm_config_error} ->
         raise ArgumentError,
           "The :name, :query, :persistence, :event_messaging, and :storage_provider options are required to start a Filix service"
     end
   end
 
-  def validate_config(config) do
+  defp validate_config(config) do
     conform(config, selection(valid_config()))
   end
 
-  def valid_config, do: schema(%{
+  defp valid_config, do: schema(%{
     name: spec(is_atom()),
     query: spec(is_atom()),
     persistence: spec(is_atom()),
@@ -121,12 +121,12 @@ defmodule Filix do
     RequestUpload.new(params)
   end
 
-  def update_upload_progress(upload_id, progress)
+  def update_upload_progress(service_name, upload_id, progress)
   when is_integer(progress) do
-    UploadProcess.update_progress(upload_id, progress)
+    UploadProcess.update_progress(service_name, upload_id, progress)
   end
 
-  def cancel(upload_id) do
-    UploadProcess.cancel_upload(upload_id)
+  def cancel(service_name, upload_id) do
+    UploadProcess.cancel_upload(service_name, upload_id)
   end
 end

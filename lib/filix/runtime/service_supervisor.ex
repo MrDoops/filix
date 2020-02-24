@@ -20,7 +20,7 @@ defmodule Filix.Runtime.ServiceSupervisor do
     children = [
       {ServiceManager, config},
       {Registry, name: Module.concat(Filix.UploadRegistry, service_name), keys: :unique},
-      {Filix.Runtime.UploadSupervisor, []}
+      {UploadSupervisor, service_name},
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
