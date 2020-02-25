@@ -12,6 +12,7 @@ defmodule Filix.Runtime.ServiceManager do
     * We might should separate concerns of config and the Upload Monitor as the upload progress is frequently updated wheras the config rarely changes.
     * Upload Monitoring: High Read High Write - eventual consistency is fine
     * Config: High Read, rare write - availability most important (consider logic to refetch config, if changed, upon adapter specific failures for uploads)
+      - Persistent Term?
   """
   use GenServer
 
@@ -51,10 +52,6 @@ defmodule Filix.Runtime.ServiceManager do
     }
 
     :ets.insert(config_table_name, {:config, config})
-
-    # Enum.map(config, fn {k, v} ->
-    #   :ets.insert(config_table_name, {k, v})
-    # end)
 
     state
   end

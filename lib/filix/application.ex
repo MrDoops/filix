@@ -4,7 +4,7 @@ defmodule Filix.Application do
 
   def start(_type, _args) do
     children = [
-      {Filix.Runtime.UploadSupervisor, []}
+      # {Filix.Runtime.UploadSupervisor, []}
     ]
 
     opts = [strategy: :one_for_one, name: Filix.Supervisor]
