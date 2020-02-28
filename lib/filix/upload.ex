@@ -26,12 +26,12 @@ defmodule Filix.Upload do
     field :storage_provider, atom()
   end
 
-  def new(%RequestUpload{} = command, storage_provider) do
+  def new(%RequestUpload{} = command) do
     %Upload{
       file: File.new(command),
       status: :requested,
       progress: 0,
-      storage_provider: storage_provider,
+      storage_provider: command.storage_provider,
     }
   end
 

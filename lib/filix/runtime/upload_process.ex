@@ -55,7 +55,7 @@ defmodule Filix.Runtime.UploadProcess do
 
   def handle_continue(:init, %RequestUpload{} = cmd) do
     config = ServiceManager.fetch_config(cmd.service_name)
-    {:noreply, Upload.new(cmd, config.storage_provider)}
+    {:noreply, Upload.new(cmd)}
   end
 
   def cancel_upload(service_name, upload_id) do
@@ -71,7 +71,7 @@ defmodule Filix.Runtime.UploadProcess do
   end
 
   def handle_cast({:update_upload_progress, progress}, %Upload{} = upload) do
-    {:reply, :ok, Upload.progress(upload, progress)}
+    {:noreply, Upload.progress(upload, progress)}
   end
 
   def handle_call(:cancel_upload, _from, upload) do
