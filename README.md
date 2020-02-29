@@ -2,11 +2,11 @@
 
 Flexible File Management capabilities designed for modern event-driven systems.
 
-Filix is a stateful OTP application that supports runtime configuration of dependencies for
+Filix is a stateful OTP service that supports runtime configuration of dependencies for
 persistence, storage providers (S3, GCS, etc), query and event messaging capabilities.
 
 The goal is that you can plug Filix into any Elixir application where you want to upload and manage
-static files. Filix emits a variety of events to the event messaging adapter you configure to support
+static files. Filix emits a variety of events to the configured `EventHandler` adapter to support
 live monitoring of upload progress with presigned url uploads so long as the client notifies of progress.
 
 Files can be tagged in Filix either to start when Requesting an Upload, or afterward. Events are emitted to the 
@@ -42,10 +42,11 @@ defmodule MyApp.Application do
 
   def start(_type, _args) do
     children = [
-      {Filix, [
+      {Filix, [ name: MyFilixService,
         query: MyApp.FilixQuery,
         persistence: MyApp.FilixPersistence,
-        event_messaging: MyApp.FilixEventForwarder,
+        event_handler: MyApp.FilixEventForwarder,
+        storage_provider: MyApp.FilixS3Provider,
       ]}
     ]
 
@@ -55,22 +56,21 @@ defmodule MyApp.Application do
 end
 ```
 
-The options Filix requires are your startup defaults. During each call to Request Upload you can still override
-the behaviour implementations for Query, Peristence, and Event Messaging. Additionally since all the configuration is
-runtime modifiable you could always spawn an new Filix application ad-hoc.
+For a Filix Service the `query`, `persistence`, and `event_handler` implementations are configured at startup. The `storage_provider`
+  can be overridden on an ad-hoc basis, but a Filix Service still requires a default implementation configured at startup.
 
 ### Work In Progress Software
 
 Filix is still a work in progress. While I had needs for Filix's featureset for many different applications
-this is mostly an experiment for how one can properly compose a stateful capabilities like file & upload management.
+this is mostly an experiment for how one could properly compose a stateful capabilities like file & upload management on a library level.
 
-I first started working on Filix when I was still new to Elixir, but have since picked the project up again to implement with 
-newer conventions.
+I had originally started Filix as a project when I was new to Elixir, but I've since reworked it significantly to be more extensible
+and follow better configuration practices. This mostly amounts to Behaviour interfaces for required adapters and CQRS separation at that level.
 
 Some things I'm still working out:
 
-[ ] - Multi-node configuration. Filix currently depend's on Elixir's Registry when spawning UploadProcess under a DynamicSupervisor.
-  This makes Filix's runtime single node, however since the query, persistence, and event_messaging are configurable the implementation itself can be multi-node to monitor uploads. I still need to think more about the best way to tackle distribution.
+- [ ] Multi-node configuration. Filix currently depend's on Elixir's Registry when spawning UploadProcess under a DynamicSupervisor.
+  This makes Filix's runtime single node, however since the query, persistence, and event_messaging are configurable the implementation itself can be multi-node to monitor uploads. We'll probably allow a distributed Registry to be configured instead.
 
 ## Installation
 
