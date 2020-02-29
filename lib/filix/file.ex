@@ -13,7 +13,6 @@ defmodule Filix.File do
     field :tags, nonempty_list(String.t()), enforce: true
   end
 
-  @spec new(RequestUpload.t()) :: Filix.File.t()
   def new(%RequestUpload{} = command) do
     %__MODULE__{
       id: command.id,

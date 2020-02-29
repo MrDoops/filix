@@ -90,7 +90,7 @@ defmodule Filix do
   * `name` : Atom / Module name that is used to identify supervised processes spawned by Filix
   * `query` : Module that implements the Filix.Query behaviour
   * `persistence` : Module that implements the Filix.Persistence behaviour
-  * `event_messaging` : Module that implements the Filix.EventMessaging behaviour
+  * `event_handler` : Module that implements the Filix.EventHandler behaviour
   * `storage_provider` : Default module that implements the Filix.StorageProvider behaviour. Overridable in Filix commands.
 
   Invalid configuration will result in an argument error.
@@ -113,12 +113,16 @@ defmodule Filix do
     name: spec(is_atom()),
     query: spec(is_atom()),
     persistence: spec(is_atom()),
-    event_messaging: spec(is_atom()),
+    event_handler: spec(is_atom()),
     storage_provider: spec(is_atom()),
   })
 
   def request_upload(params) do
     RequestUpload.new(params)
+  end
+
+  def execute(cmd) do
+    cmd.service_name.execute(cmd)
   end
 
   def update_upload_progress(service_name, upload_id, progress)
