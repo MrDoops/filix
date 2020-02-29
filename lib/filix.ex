@@ -101,7 +101,7 @@ defmodule Filix do
         ServiceSupervisor.child_spec(config)
       {:error, _norm_config_error} ->
         raise ArgumentError,
-          "The :name, :query, :persistence, :event_messaging, and :storage_provider options are required to start a Filix service"
+          "The :name, :query, :persistence, :event_handler, and :storage_provider options are required to start a Filix service"
     end
   end
 
