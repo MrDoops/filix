@@ -95,6 +95,9 @@ defmodule Filix do
 
   Invalid configuration will result in an argument error.
   """
+  def child_spec(config) when is_list(config) do
+    Enum.into(config, %{})
+  end
   def child_spec(config) do
     case validate_config(config) do
       {:ok, _config} ->
