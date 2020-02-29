@@ -6,7 +6,8 @@ defmodule Filix.Events.FileUploaded do
   use TypedStruct
 
   typedstruct do
-    field :upload_id, String.t()
-    field :progress, 0..100
+    field :file_id, String.t()
+    field :uploaded_on, DateTime.t()
+    field :storage_provider, module()
   end
 end

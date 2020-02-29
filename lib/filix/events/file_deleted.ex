@@ -5,7 +5,8 @@ defmodule Filix.Events.FileDeleted do
   use TypedStruct
 
   typedstruct do
-    field :upload_id, String.t()
-    field :storage_provider, 0..100
+    field :file_id, String.t()
+    field :storage_provider, module()
+    field :deleted_on, DateTime.t()
   end
 end

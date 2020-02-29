@@ -4,9 +4,11 @@ defmodule Filix.Persistence do
 
   Defines how Files and Tags are created, updated, and deleted.
 
-  Should work in tandem with a Query implementation so the default capabilities of managing files by Filix is possible.
+  Should work in tandem with a Query implementation so the default capabilities of managing files by Filix are possible.
 
-  If you'd like to persist a log of events that can be done by handling events published by
+  If you'd like to persist a log of events that can be done by handling events published to the EventHandler implementation.
+
+  You can also build your own projected read-model based on the events published to the EventHandler.
   """
   alias Filix.{File, Tag}
 
