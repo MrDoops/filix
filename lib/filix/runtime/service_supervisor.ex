@@ -9,6 +9,16 @@ defmodule Filix.Runtime.ServiceSupervisor do
     ServiceManager,
   }
 
+  @impl true
+  def child_spec(%{name: service_name} = config) do
+    %{
+      id: Module.concat(__MODULE__, config[:name]),
+      start: {Filix.Runtime.ServiceSupervisor, :start_link, [config]},
+      type: :supervisor
+    }
+  end
+
+  @impl true
   def start_link(config) do
     sup_name = Module.concat(__MODULE__, config[:name])
 

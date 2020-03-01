@@ -40,16 +40,16 @@ defmodule Filix.Runtime.ServiceManager do
   defp setup_state_from_config(%{name: service_name} = config) do
     config_table_name = config_table_name(service_name)
 
-    state = %{ config |
-      upload_monitor_table: :ets.new(
+    state =
+      config
+      |> Map.put_new(:upload_monitor_table, :ets.new(
         upload_monitor_table_name(service_name),
         [:named_table, :set, :public, read_concurrency: true]
-      ),
-      config_table: :ets.new(
+      ))
+      |> Map.put_new(:config_table, :ets.new(
         config_table_name,
         [:named_table, :set, :public, read_concurrency: true]
-      ),
-    }
+      ))
 
     :ets.insert(config_table_name, {:config, config})
 
